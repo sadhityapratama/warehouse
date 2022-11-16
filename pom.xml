@@ -56,6 +56,7 @@
 			<version>8.0.31</version>
 		</dependency>
 
+<<<<<<< HEAD
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.uuid/java-uuid-generator -->
 		<dependency>
 			<groupId>com.fasterxml.uuid</groupId>
@@ -63,6 +64,14 @@
 			<version>4.0.1</version>
 		</dependency>
 
+=======
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.18.24</version>
+				<scope>provided</scope>
+			</dependency>
+>>>>>>> e2a5c33543356144dbe10009f76bb2fbb5e61ce5
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
 <!--		<dependency>-->

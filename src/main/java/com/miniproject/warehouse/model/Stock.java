@@ -1,7 +1,10 @@
 package com.miniproject.warehouse.model;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
+@Data
 @Entity
 @Table(name = "stock")
 public class Stock {
@@ -20,35 +23,4 @@ public class Stock {
     @Column(name = "stock", nullable = false)
     private int stock;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getAssetBarcode() {
-        return assetBarcode;
-    }
-
-    public void setAssetBarcode(String assetBarcode) {
-        this.assetBarcode = assetBarcode;
-    }
-
-    public int getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(int warehouseId) {
-        this.warehouseId = warehouseId;
-    }
-
-    public int getStock() {
-        return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
 }

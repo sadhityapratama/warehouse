@@ -1,8 +1,11 @@
 package com.miniproject.warehouse.model;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Date;
 
+@Data
 @Entity
 @Table(name = "transaction")
 public class Transaction {
@@ -24,43 +27,5 @@ public class Transaction {
     @Column(name = "warehouse_id", nullable = false, updatable = false)
     private int warehouseId;
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTransactionType() {
-        return transactionType;
-    }
-
-    public void setTransactionType(String transactionType) {
-        this.transactionType = transactionType;
-    }
-
-    public Date getTransactionDate() {
-        return transactionDate;
-    }
-
-    public void setTransactionDate(Date transactionDate) {
-        this.transactionDate = transactionDate;
-    }
-
-    public int getTransactionQuantity() {
-        return transactionQuantity;
-    }
-
-    public void setTransactionQuantity(int transactionQuantity) {
-        this.transactionQuantity = transactionQuantity;
-    }
-
-    public int getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(int warehouseId) {
-        this.warehouseId = warehouseId;
-    }
 }
