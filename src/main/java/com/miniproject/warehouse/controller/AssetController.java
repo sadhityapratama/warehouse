@@ -48,35 +48,12 @@ public class AssetController {
         return assetRepository.findAssetByBarcode(barcode);
     }
 
-    @PostMapping("/add/{warehouseId}")
+    @PostMapping("/add/")
     @ResponseStatus(HttpStatus.OK)
-    Asset addAsset(@RequestBody Asset asset,@PathVariable("warehouseId") int warehouseId){
+    Asset addAsset(@RequestBody Asset asset){
 
         UUID barcode = Generators.timeBasedGenerator().generate();
         asset.setBarcode(barcode.toString());
-
-        Warehouse warehouse = warehouseRepository.findWarehouseById(warehouseId);
-
-        Transaction transaction = new Transaction();
-        transaction.setTransactionDate(new Date());
-        transaction.setTransactionQuantity(1);
-        transaction.setWarehouseId(warehouse.getId());
-        transaction.setTransactionType("CHECK_IN");
-
-        Stock stock = stockRepository.findStockByAssetBarcode(asset.getBarcode());
-        if (stock == null){
-            stock.setAssetBarcode(asset.getBarcode());
-            stock.setWarehouseId(warehouseId);
-            stock.setStock(1);
-        } else {
-            stock.setStock(stock.getStock()+1);
-        }
-
-
-
-        stockRepository.save(stock);
-
-        transactionRepository.save(transaction);
 
         return assetRepository.save(asset);
     }
@@ -92,8 +69,6 @@ public class AssetController {
     public String deleteAsset(@PathVariable("barcode") String barcode){
 
         assetRepository.deleteById(barcode);
-
-
         return "DELETED SUCCESSFULLY";
     }
 
