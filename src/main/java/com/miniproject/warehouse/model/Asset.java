@@ -24,40 +24,4 @@ public class Asset {
     @Column(name = "asset_information")
     private String assetInformation;
 
-<<<<<<< HEAD
-    public String getBarcode() {
-        return barcode;
-    }
-
-    public void setBarcode(String barcode) {
-        this.barcode = barcode;
-    }
-
-    public String getAssetInformation() {
-        return assetInformation;
-    }
-
-    public void setAssetInformation(String assetInformation) {
-        this.assetInformation = assetInformation;
-    }
-
-    public String getAssetName() {
-        return assetName;
-    }
-
-    public void setAssetName(String assetName) {
-        this.assetName = assetName;
-    }
-
-    public String getAssetDescription() {
-        return assetDescription;
-    }
-
-    public void setAssetDescription(String assetDescription) {
-        this.assetDescription = assetDescription;
-    }
-
-
-=======
->>>>>>> e2a5c33543356144dbe10009f76bb2fbb5e61ce5
 }

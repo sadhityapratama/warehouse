@@ -1,8 +1,9 @@
 package com.miniproject.warehouse.controller;
 
-import com.miniproject.warehouse.model.Asset;
+import com.miniproject.warehouse.dto.AssetStockbyWarehouse;
 import com.miniproject.warehouse.model.Warehouse;
 import com.miniproject.warehouse.repository.WarehouseRepository;
+import com.miniproject.warehouse.service.WarehouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,15 +17,23 @@ public class WarehouseController {
     @Autowired
     private WarehouseRepository warehouseRepository;
 
+    @Autowired
+    private WarehouseService warehouseService;
+
     @GetMapping("/listall")
     @ResponseStatus(HttpStatus.OK)
-    public List<Warehouse> getAllWarehhouse(){
+    public List<Warehouse> getAllWarehouse(){
         return warehouseRepository.findAll();
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/liststock")
+    public List<AssetStockbyWarehouse> getAllStockbyWarehouse(@RequestParam("id") int id){
+        return warehouseService.getAllAssetStock(id);
+    }
+
+    @GetMapping("/get")
     @ResponseStatus(HttpStatus.OK)
-    Warehouse getWarehouseById(@PathVariable("id")int id){
+    Warehouse getWarehouseById(@RequestParam("id") int id){
         return warehouseRepository.findWarehouseById(id);
     }
 
@@ -42,7 +51,7 @@ public class WarehouseController {
 
     @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
-    public String deleteWarehouse(@PathVariable("id")int id){
+    public String deleteWarehouse(@RequestParam("id") int id){
 
         warehouseRepository.deleteById(id);
 

@@ -56,7 +56,6 @@
 			<version>8.0.31</version>
 		</dependency>
 
-<<<<<<< HEAD
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.uuid/java-uuid-generator -->
 		<dependency>
 			<groupId>com.fasterxml.uuid</groupId>
@@ -64,14 +63,27 @@
 			<version>4.0.1</version>
 		</dependency>
 
-=======
-			<dependency>
+		<!-- https://mvnrepository.com/artifact/log4j/log4j -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+
+
+		<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
 				<version>1.18.24</version>
 				<scope>provided</scope>
 			</dependency>
->>>>>>> e2a5c33543356144dbe10009f76bb2fbb5e61ce5
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
 <!--		<dependency>-->

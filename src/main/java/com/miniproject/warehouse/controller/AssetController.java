@@ -3,6 +3,7 @@ package com.miniproject.warehouse.controller;
 import com.fasterxml.uuid.Generators;
 import com.miniproject.warehouse.model.Asset;
 import com.miniproject.warehouse.repository.AssetRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("asset")
+@Slf4j
 public class AssetController {
 
     @Autowired
@@ -25,7 +27,8 @@ public class AssetController {
 
     @GetMapping("/get/{barcode}")
     @ResponseStatus(HttpStatus.OK)
-    Asset getAssetByBarcode(@PathVariable("barcode")String barcode){
+    Asset getAssetByBarcode(@PathVariable("barcode") String barcode){
+        log.info(barcode);
         return assetRepository.findAssetByBarcode(barcode);
     }
 
@@ -38,7 +41,7 @@ public class AssetController {
         return assetRepository.save(asset);
     }
 
-    @PutMapping("/update/")
+    @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
     Asset updateAsset(@RequestBody Asset asset){
         return assetRepository.save(asset);
