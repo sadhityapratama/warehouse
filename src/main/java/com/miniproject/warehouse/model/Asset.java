@@ -24,7 +24,6 @@ public class Asset {
     @Column(name = "asset_information")
     private String assetInformation;
 
-<<<<<<< HEAD
     public String getBarcode() {
         return barcode;
     }
@@ -58,6 +57,4 @@ public class Asset {
     }
 
 
-=======
->>>>>>> e2a5c33543356144dbe10009f76bb2fbb5e61ce5
 }
