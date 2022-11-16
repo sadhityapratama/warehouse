@@ -2,8 +2,11 @@ package com.miniproject.warehouse.repository;
 
 import com.miniproject.warehouse.model.Asset;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-public interface AssetRepository extends JpaRepository<Asset, Integer> {
+import java.util.UUID;
 
-//    Asset findAssetByBarcode(String assetBarcode);
+public interface AssetRepository extends JpaRepository<Asset, String> {
+
+    Asset findAssetByBarcode(String assetBarcode);
 }

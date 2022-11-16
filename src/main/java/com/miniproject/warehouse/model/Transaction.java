@@ -9,7 +9,7 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "transaction_id", nullable = false, updatable = false)
+    @Column(name = "id", nullable = false, updatable = false)
     private int id;
 
     @Column(name = "transaction_type", nullable = false)

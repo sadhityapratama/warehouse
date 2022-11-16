@@ -8,7 +8,7 @@ public class Warehouse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "warehouse_id", updatable = false, nullable = false)
+    @Column(name = "id", updatable = false, nullable = false)
     private int id;
 
     @Column(name = "warehouse_name", nullable = false)

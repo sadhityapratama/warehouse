@@ -8,7 +8,7 @@ public class Stock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "stock_id", updatable = false, nullable = false )
+    @Column(name = "id", updatable = false, nullable = false )
     private int id;
 
     @Column(name = "asset_barcode", updatable = false, nullable = false)

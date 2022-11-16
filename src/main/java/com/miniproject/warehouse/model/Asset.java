@@ -10,10 +10,8 @@ import java.util.UUID;
 public class Asset {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID" , strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "asset_barcode", updatable = false, nullable = false )
-    private UUID assetBarcode;
+    @Column(name = "barcode", updatable = false, nullable = false )
+    private String barcode;
 
     @Column(name = "asset_name", nullable = false)
     private String assetName;
@@ -24,12 +22,12 @@ public class Asset {
     @Column(name = "asset_information")
     private String assetInformation;
 
-    public UUID getAssetBarcode() {
-        return assetBarcode;
+    public String getBarcode() {
+        return barcode;
     }
 
-    public void setAssetBarcode(UUID assetBarcode) {
-        this.assetBarcode = assetBarcode;
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
     }
 
     public String getAssetInformation() {
