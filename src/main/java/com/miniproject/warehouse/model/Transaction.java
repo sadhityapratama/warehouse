@@ -15,6 +15,9 @@ public class Transaction {
     @Column(name = "id", nullable = false, updatable = false)
     private int id;
 
+    @Column(name = "asset_barcode", nullable = false, updatable = false)
+    private String assetBarcode;
+
     @Column(name = "transaction_type", nullable = false)
     private String transactionType;
 

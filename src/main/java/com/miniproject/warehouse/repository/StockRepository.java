@@ -10,4 +10,5 @@ import java.util.List;
 public interface StockRepository extends JpaRepository<Stock, Integer> {
 
     List<Stock> findByWarehouseId(int warehouseId);
+    Stock findStockByAssetBarcode(String assetBarcode);
 }
