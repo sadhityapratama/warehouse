@@ -53,6 +53,4 @@ public class AssetController {
         return "DELETED SUCCESSFULLY";
     }
 
-
-
 }
