@@ -62,16 +62,23 @@ public class TransactionService {
             } else if(transaction.getTransactionType().equals(TransactionTypeEnum.CHECK_IN.name()) && stock != null){
                 stock.setStock(stock.getStock()+transaction.getTransactionQuantity());
 
-                stockRepository.save(stock);
+                if(stock.getStock() > warehouse.getWarehouseCapacity()){
+                    httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    httpResponse.setMessage("WAREHOUSE FULL, CANNOT ADD TRANSACTION!");
+                } else {
+                    stockRepository.save(stock);
 
-                httpResponse.setObject(transactionRepository.save(transaction));
-                httpResponse.setStatus(HttpStatus.OK.value());
-                httpResponse.setMessage(HttpStatus.OK.name());
+                    httpResponse.setObject(transactionRepository.save(transaction));
+                    httpResponse.setStatus(HttpStatus.OK.value());
+                    httpResponse.setMessage(HttpStatus.OK.name());
+                }
+
+
             } else if (transaction.getTransactionType().equals(TransactionTypeEnum.CHECK_OUT.name()) && stock == null){
-                log.error("STOCK NOT FOUND, CANNOT ADD TRANSACITON!");
+                log.error("STOCK NOT FOUND, CANNOT ADD TRANSACTION!");
 
                 httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                httpResponse.setMessage("STOCK NOT FOUND, CANNOT CHECK OUT TRANSACITON!");
+                httpResponse.setMessage("STOCK NOT FOUND, CANNOT CHECK OUT TRANSACTION!");
             } else if(transaction.getTransactionType().equals(TransactionTypeEnum.CHECK_OUT.name()) && stock != null){
                 if(stock.getStock() < transaction.getTransactionQuantity()){
                     log.error("NOT ENOUGH STOCK, CANNOT CHECK OUT TRANSACTION!");
@@ -88,10 +95,10 @@ public class TransactionService {
                 }
             }
         } else {
-            log.error("ASSET OR WAREHOUSE NOT FOUND, CANNOT ADD TRANSACITON!");
+            log.error("ASSET OR WAREHOUSE NOT FOUND, CANNOT ADD TRANSACTION!");
 
             httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            httpResponse.setMessage("ASSET OR WAREHOUSE NOT FOUND, CANNOT ADD TRANSACITON!");
+            httpResponse.setMessage("ASSET OR WAREHOUSE NOT FOUND, CANNOT ADD TRANSACTION!");
         }
         return httpResponse;
     }

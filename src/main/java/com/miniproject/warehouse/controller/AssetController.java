@@ -73,6 +73,22 @@ public class AssetController {
         return httpResponse;
     }
 
+    @GetMapping("/report")
+    @ResponseStatus(HttpStatus.OK)
+    public HttpResponse getAssetReport() throws Exception {
+        HttpResponse httpResponse = new HttpResponse();
+
+        List<AssetReport> assetReportList = assetService.getAssetReport();
+        httpResponse.setObject(assetReportList);
+        if (assetReportList.isEmpty()){
+            httpResponse.setMessage(HttpStatus.NO_CONTENT.name());
+            httpResponse.setStatus(HttpStatus.NO_CONTENT.value());
+        }else {
+            httpResponse.setMessage(HttpStatus.OK.name());
+            httpResponse.setStatus(HttpStatus.OK.value());
+        }
+        return httpResponse;
+    }
 
     @PostMapping("/add/")
     @ResponseStatus(HttpStatus.OK)
