@@ -3,6 +3,7 @@ package com.miniproject.warehouse.controller;
 import com.miniproject.warehouse.dto.AssetStockbyWarehouse;
 import com.miniproject.warehouse.model.Warehouse;
 import com.miniproject.warehouse.repository.WarehouseRepository;
+import com.miniproject.warehouse.response.HttpResponse;
 import com.miniproject.warehouse.service.WarehouseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,41 +25,83 @@ public class WarehouseController {
 
     @GetMapping("/listall")
     @ResponseStatus(HttpStatus.OK)
-    public List<Warehouse> getAllWarehouse(){
-        return warehouseRepository.findAll();
+    public HttpResponse getAllWarehouse(){
+        HttpResponse httpResponse = new HttpResponse();
+        List<Warehouse> warehouseList = warehouseRepository.findAll();
+        httpResponse.setObject(warehouseList);
+        if (warehouseList.isEmpty()){
+            httpResponse.setMessage(HttpStatus.NO_CONTENT.name());
+            httpResponse.setStatus(HttpStatus.NO_CONTENT.value());
+        }else {
+            httpResponse.setMessage(HttpStatus.OK.name());
+            httpResponse.setStatus(HttpStatus.OK.value());
+        }
+
+        return httpResponse;
     }
 
     @GetMapping("/liststock")
-    public List<AssetStockbyWarehouse> getAllStockbyWarehouse(@RequestParam("id") int warehouseId) throws Exception{
+    public HttpResponse getAllStockbyWarehouse(@RequestParam("id") int warehouseId) throws Exception{
         log.info("[INQUIRY] Get Asset from Warehouse id {} Sent", warehouseId);
-        return warehouseService.getAllAssetStock(warehouseId);
+        HttpResponse httpResponse = new HttpResponse();
+        List<AssetStockbyWarehouse> assetStockbyWarehouseList = warehouseService.getAllAssetStock(warehouseId);
+        httpResponse.setObject(assetStockbyWarehouseList);
+
+        if (assetStockbyWarehouseList.isEmpty()){
+            httpResponse.setMessage(HttpStatus.NO_CONTENT.name());
+            httpResponse.setStatus(HttpStatus.NO_CONTENT.value());
+        }else {
+            httpResponse.setMessage(HttpStatus.OK.name());
+            httpResponse.setStatus(HttpStatus.OK.value());
+        }
+        return httpResponse;
     }
 
-    @GetMapping("/get")
+    @GetMapping("/get/{id}")
     @ResponseStatus(HttpStatus.OK)
-    Warehouse getWarehouseById(@RequestParam("id") int warehouseId){
-        return warehouseRepository.findWarehouseById(warehouseId);
+    public HttpResponse getWarehouseById(@PathVariable("id") int warehouseId){
+        HttpResponse httpResponse = new HttpResponse();
+        Warehouse warehouse =  warehouseRepository.findWarehouseById(warehouseId);
+        httpResponse.setObject(warehouse);
+        if (warehouse == null){
+            httpResponse.setMessage(HttpStatus.NO_CONTENT.name());
+            httpResponse.setStatus(HttpStatus.NO_CONTENT.value());
+        }else {
+            httpResponse.setMessage(HttpStatus.OK.name());
+            httpResponse.setStatus(HttpStatus.OK.value());
+        }
+        return httpResponse;
     }
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.OK)
-    public Warehouse addWarehouse(@RequestBody Warehouse warehouse){
-        return warehouseRepository.save(warehouse);
+    public HttpResponse addWarehouse(@RequestBody Warehouse warehouse){
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setObject(warehouseRepository.save(warehouse));
+        httpResponse.setStatus(HttpStatus.OK.value());
+        httpResponse.setMessage(HttpStatus.OK.name());
+        return httpResponse;
     }
 
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    public Warehouse updateWarehouse(@RequestBody Warehouse warehouse){
-        return warehouseRepository.save(warehouse);
+    public HttpResponse updateWarehouse(@RequestBody Warehouse warehouse){
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setObject(warehouseRepository.save(warehouse));
+        httpResponse.setStatus(HttpStatus.OK.value());
+        httpResponse.setMessage(HttpStatus.OK.name());
+        return httpResponse;
     }
 
     @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
-    public String deleteWarehouse(@RequestParam("id") int warehouseId){
-
+    HttpResponse deleteWarehouse(@RequestParam("id") int warehouseId){
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setStatus(HttpStatus.OK.value());
+        httpResponse.setMessage("SUCCESSFULLY DELETED!");
         warehouseRepository.deleteById(warehouseId);
 
-        return "DELETED SUCCESFULLY";
+        return httpResponse;
     }
 
 }
