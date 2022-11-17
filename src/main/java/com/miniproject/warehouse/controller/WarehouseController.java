@@ -36,29 +36,27 @@ public class WarehouseController {
 
     @GetMapping("/get")
     @ResponseStatus(HttpStatus.OK)
-    Warehouse getWarehouseById(@RequestParam("id") int warehouseId){
+    Warehouse getWarehouseById(@RequestParam("id") int warehouseId) throws Exception{
         return warehouseRepository.findWarehouseById(warehouseId);
     }
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.OK)
-    public Warehouse addWarehouse(@RequestBody Warehouse warehouse){
-        return warehouseRepository.save(warehouse);
+    public Warehouse addWarehouse(@RequestBody Warehouse warehouse) throws Exception{
+        return warehouseService.insertWarehouse(warehouse);
     }
 
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    public Warehouse updateWarehouse(@RequestBody Warehouse warehouse){
-        return warehouseRepository.save(warehouse);
+    public Warehouse updateWarehouse(@RequestBody Warehouse warehouse) throws Exception{
+        return warehouseService.updateWarehouse(warehouse);
     }
 
     @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
-    public String deleteWarehouse(@RequestParam("id") int warehouseId){
+    public Warehouse deleteWarehouse(@RequestParam("id") int warehouseId) throws Exception{
 
-        warehouseRepository.deleteById(warehouseId);
-
-        return "DELETED SUCCESFULLY";
+        return warehouseService.deleteWarehouse(warehouseId);
     }
 
 }

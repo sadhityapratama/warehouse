@@ -31,9 +31,35 @@ public class WarehouseService {
     @Autowired
     private ValidationService validationService;
 
-//    public Asset insertAsset(Asset asset) throws Exception{
-//        log.info("")
-//    }
+    public Warehouse insertWarehouse(Warehouse warehouse) throws Exception{
+        log.info("[INSERT] Insert new Warehouse with name {}", warehouse.getWarehouseName());
+        /**
+         * Validation Step
+         */
+        validationService.validateDuplicateWarehouse(warehouse.getWarehouseName());
+
+        return warehouseRepository.save(warehouse);
+    }
+
+    public Warehouse updateWarehouse(Warehouse warehouse) throws Exception{
+        log.info("[UPDATE] Update warehouse with id {} ", warehouse.getId());
+        /**
+         * Validation Step
+         */
+        validationService.validateIfWarehouseExists(warehouse.getId());
+
+        return warehouseRepository.save(warehouse);
+    }
+
+    public Warehouse deleteWarehouse(int warehouseId) throws Exception{
+        log.info("[DELETE] Delete warehouse with id {} ", warehouseId);
+        /**
+         * Validation Step
+         */
+        validationService.validateIfWarehouseExists(warehouseId);
+
+        return warehouseRepository.deleteById(warehouseId);
+    }
 
     public List<AssetStockbyWarehouse> getAllAssetStock(int warehouseId) throws Exception{
 
