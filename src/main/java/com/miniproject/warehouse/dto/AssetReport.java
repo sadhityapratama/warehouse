@@ -9,8 +9,7 @@ import java.util.List;
 
 @Data
 public class AssetReport {
-    private Asset asset;
-    private List<Stock> stock;
+    private AssetStockbyWarehouse assetStockbyWarehouse;
     private int transactionCheckIn;
     private int transactionCheckOut;
 

@@ -2,6 +2,7 @@ package com.miniproject.warehouse.service;
 
 import com.miniproject.warehouse.dto.AssetCheckInOut;
 import com.miniproject.warehouse.enums.TransactionTypeEnum;
+import com.miniproject.warehouse.exception.BadRequestException;
 import com.miniproject.warehouse.model.Asset;
 import com.miniproject.warehouse.model.Stock;
 import com.miniproject.warehouse.model.Transaction;
@@ -32,67 +33,79 @@ public class TransactionService {
 
     @Autowired
     private StockRepository stockRepository;
-
     @Autowired
     private WarehouseRepository warehouseRepository;
+    @Autowired
+    ValidationService validationService;
 
-    public HttpResponse addTransaction(Transaction transaction){
+    public Transaction getTransaction(int id) throws Exception{
+        validationService.validateIfTransactionExists(id);
+        return transactionRepository.findTransactionById(id);
+    }
+
+    public void deleteTransaction(int id)throws Exception{
+        validationService.validateIfTransactionExists(id);
+        transactionRepository.deleteById(id);
+    }
+
+    public HttpResponse addTransaction(Transaction transaction) throws Exception {
         HttpResponse httpResponse = new HttpResponse();
+        validationService.validateIfAssetExists(transaction.getAssetBarcode());
+        validationService.validateIfWarehouseExists(transaction.getWarehouseId());
 
-        Asset asset = assetRepository.findAssetByBarcode(transaction.getAssetBarcode());
         Warehouse warehouse = warehouseRepository.findWarehouseById(transaction.getWarehouseId());
+        Stock stock = stockRepository.findStockByAssetBarcodeAndWarehouseId(transaction.getAssetBarcode(), transaction.getWarehouseId());
+        transaction.setTransactionDate(new Date());
 
 
-        if (asset != null && warehouse != null){
-            Stock stock = stockRepository.findStockByAssetBarcodeAndWarehouseId(transaction.getAssetBarcode(), transaction.getWarehouseId());
-            transaction.setTransactionDate(new Date());
+        if(transaction.getTransactionType().equals(TransactionTypeEnum.CHECK_IN.name()) && stock == null){
+            Stock addStock = new Stock();
+            addStock.setAssetBarcode(transaction.getAssetBarcode());
+            addStock.setWarehouseId(transaction.getWarehouseId());
+            addStock.setStock(transaction.getTransactionQuantity());
 
+            stockRepository.save(addStock);
 
-            if(transaction.getTransactionType().equals(TransactionTypeEnum.CHECK_IN.name()) && stock == null){
-                Stock addStock = new Stock();
-                addStock.setAssetBarcode(transaction.getAssetBarcode());
-                addStock.setWarehouseId(transaction.getWarehouseId());
-                addStock.setStock(transaction.getTransactionQuantity());
+            httpResponse.setObject(transactionRepository.save(transaction));
+            httpResponse.setStatus(HttpStatus.OK.value());
+            httpResponse.setMessage(HttpStatus.OK.name());
+        } else if(transaction.getTransactionType().equals(TransactionTypeEnum.CHECK_IN.name()) && stock != null){
+            stock.setStock(stock.getStock()+transaction.getTransactionQuantity());
 
-                stockRepository.save(addStock);
-
-                httpResponse.setObject(transactionRepository.save(transaction));
-                httpResponse.setStatus(HttpStatus.OK.value());
-                httpResponse.setMessage(HttpStatus.OK.name());
-            } else if(transaction.getTransactionType().equals(TransactionTypeEnum.CHECK_IN.name()) && stock != null){
-                stock.setStock(stock.getStock()+transaction.getTransactionQuantity());
-
+            if(stock.getStock() > warehouse.getWarehouseCapacity()){
+                httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                httpResponse.setMessage("WAREHOUSE FULL, CANNOT ADD TRANSACTION!");
+            } else {
                 stockRepository.save(stock);
 
                 httpResponse.setObject(transactionRepository.save(transaction));
                 httpResponse.setStatus(HttpStatus.OK.value());
                 httpResponse.setMessage(HttpStatus.OK.name());
-            } else if (transaction.getTransactionType().equals(TransactionTypeEnum.CHECK_OUT.name()) && stock == null){
-                log.error("STOCK NOT FOUND, CANNOT ADD TRANSACITON!");
-
-                httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                httpResponse.setMessage("STOCK NOT FOUND, CANNOT CHECK OUT TRANSACITON!");
-            } else if(transaction.getTransactionType().equals(TransactionTypeEnum.CHECK_OUT.name()) && stock != null){
-                if(stock.getStock() < transaction.getTransactionQuantity()){
-                    log.error("NOT ENOUGH STOCK, CANNOT CHECK OUT TRANSACTION!");
-
-                    httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                    httpResponse.setMessage("NOT ENOUGH STOCK, CANNOT CHECK OUT TRANSACTION!");
-                }else if(stock.getStock() >= transaction.getTransactionQuantity()){
-                    stock.setStock(stock.getStock()- transaction.getTransactionQuantity());
-                    stockRepository.save(stock);
-
-                    httpResponse.setObject(transactionRepository.save(transaction));
-                    httpResponse.setStatus(HttpStatus.OK.value());
-                    httpResponse.setMessage(HttpStatus.OK.name());
-                }
             }
-        } else {
-            log.error("ASSET OR WAREHOUSE NOT FOUND, CANNOT ADD TRANSACITON!");
+
+
+        } else if (transaction.getTransactionType().equals(TransactionTypeEnum.CHECK_OUT.name()) && stock == null){
+            log.error("STOCK NOT FOUND, CANNOT ADD TRANSACTION!");
 
             httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            httpResponse.setMessage("ASSET OR WAREHOUSE NOT FOUND, CANNOT ADD TRANSACITON!");
+            httpResponse.setMessage("STOCK NOT FOUND, CANNOT CHECK OUT TRANSACTION!");
+        } else if(transaction.getTransactionType().equals(TransactionTypeEnum.CHECK_OUT.name()) && stock != null){
+            if(stock.getStock() < transaction.getTransactionQuantity()){
+                log.error("NOT ENOUGH STOCK, CANNOT CHECK OUT TRANSACTION!");
+
+                httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                httpResponse.setMessage("NOT ENOUGH STOCK, CANNOT CHECK OUT TRANSACTION!");
+            }else if(stock.getStock() >= transaction.getTransactionQuantity()){
+                stock.setStock(stock.getStock()- transaction.getTransactionQuantity());
+                stockRepository.save(stock);
+
+                httpResponse.setObject(transactionRepository.save(transaction));
+                httpResponse.setStatus(HttpStatus.OK.value());
+                httpResponse.setMessage(HttpStatus.OK.name());
+            }
         }
+
+
         return httpResponse;
     }
 
