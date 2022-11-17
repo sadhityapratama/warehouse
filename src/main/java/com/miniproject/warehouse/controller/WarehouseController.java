@@ -3,6 +3,7 @@ package com.miniproject.warehouse.controller;
 import com.miniproject.warehouse.dto.AssetStockbyWarehouse;
 import com.miniproject.warehouse.model.Warehouse;
 import com.miniproject.warehouse.repository.WarehouseRepository;
+import com.miniproject.warehouse.response.HttpResponse;
 import com.miniproject.warehouse.service.WarehouseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,39 +25,89 @@ public class WarehouseController {
 
     @GetMapping("/listall")
     @ResponseStatus(HttpStatus.OK)
-    public List<Warehouse> getAllWarehouse(){
-        return warehouseRepository.findAll();
+    public HttpResponse getAllWarehouse(){
+        HttpResponse httpResponse = new HttpResponse();
+        List<Warehouse> warehouseList = warehouseRepository.findAll();
+        httpResponse.setObject(warehouseList);
+        if (warehouseList.isEmpty()){
+            httpResponse.setMessage(HttpStatus.NO_CONTENT.name());
+            httpResponse.setStatus(HttpStatus.NO_CONTENT.value());
+        }else {
+            httpResponse.setMessage(HttpStatus.OK.name());
+            httpResponse.setStatus(HttpStatus.OK.value());
+        }
+
+        return httpResponse;
     }
 
     @GetMapping("/liststock")
-    public List<AssetStockbyWarehouse> getAllStockbyWarehouse(@RequestParam("id") int warehouseId) throws Exception{
+    public HttpResponse getAllStockbyWarehouse(@RequestParam("id") int warehouseId) throws Exception{
+
+        List<AssetStockbyWarehouse> assetStockbyWarehouseList = warehouseService.getAllAssetStock(warehouseId);
+
+        // Set Http Response
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setMessage(HttpStatus.OK.name());
+        httpResponse.setStatus(HttpStatus.OK.value());
+        httpResponse.setObject(assetStockbyWarehouseList);
         log.info("[INQUIRY] Get Asset from Warehouse id {} Sent", warehouseId);
-        return warehouseService.getAllAssetStock(warehouseId);
+        return httpResponse;
     }
 
-    @GetMapping("/get")
+    @GetMapping("/get/{id}")
     @ResponseStatus(HttpStatus.OK)
-    Warehouse getWarehouseById(@RequestParam("id") int warehouseId) throws Exception{
-        return warehouseRepository.findWarehouseById(warehouseId);
+    public HttpResponse getWarehouseById(@PathVariable("id") int warehouseId) throws Exception{
+
+        Warehouse warehouse =  warehouseService.getWarehouse(warehouseId);
+
+        // Set Http Response
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setObject(warehouse);
+        httpResponse.setMessage(HttpStatus.OK.name());
+        httpResponse.setStatus(HttpStatus.OK.value());
+        return httpResponse;
     }
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.OK)
-    public Warehouse addWarehouse(@RequestBody Warehouse warehouse) throws Exception{
-        return warehouseService.insertWarehouse(warehouse);
+    public HttpResponse addWarehouse(@RequestBody Warehouse warehouse) throws Exception{
+
+        Warehouse warehouseAdded = warehouseService.insertWarehouse(warehouse);
+
+        // Set Http Response
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setObject(warehouseAdded);
+        httpResponse.setStatus(HttpStatus.OK.value());
+        httpResponse.setMessage(HttpStatus.OK.name());
+        return httpResponse;
     }
 
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    public Warehouse updateWarehouse(@RequestBody Warehouse warehouse) throws Exception{
-        return warehouseService.updateWarehouse(warehouse);
+    public HttpResponse updateWarehouse(@RequestBody Warehouse warehouse) throws Exception{
+
+        Warehouse warehouseUpdated = warehouseService.updateWarehouse(warehouse);
+
+        // Set Http Response
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setObject(warehouseUpdated);
+        httpResponse.setStatus(HttpStatus.OK.value());
+        httpResponse.setMessage(HttpStatus.OK.name());
+        return httpResponse;
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Warehouse deleteWarehouse(@RequestParam("id") int warehouseId) throws Exception{
+    public HttpResponse deleteWarehouse(@PathVariable("id")  int warehouseId) throws Exception{
 
-        return warehouseService.deleteWarehouse(warehouseId);
+        Warehouse warehouseDeleted = warehouseService.deleteWarehouse(warehouseId);
+
+        // Set Http Response
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setStatus(HttpStatus.OK.value());
+        httpResponse.setMessage(HttpStatus.OK.name());
+        httpResponse.setObject(warehouseDeleted);
+        return httpResponse;
     }
 
 }

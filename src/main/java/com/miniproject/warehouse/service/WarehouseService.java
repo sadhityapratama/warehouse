@@ -31,6 +31,15 @@ public class WarehouseService {
     @Autowired
     private ValidationService validationService;
 
+    public Warehouse getWarehouse(int warehouseId) throws Exception{
+        validationService.validateIfWarehouseExists(warehouseId);
+        return warehouseRepository.findWarehouseById(warehouseId);
+    }
+
+    public List<Warehouse> getAllWarehouse() throws Exception{
+        return warehouseRepository.findAll();
+    }
+
     public Warehouse insertWarehouse(Warehouse warehouse) throws Exception{
         log.info("[INSERT] Insert new Warehouse with name {}", warehouse.getWarehouseName());
         /**
@@ -42,7 +51,7 @@ public class WarehouseService {
     }
 
     public Warehouse updateWarehouse(Warehouse warehouse) throws Exception{
-        log.info("[UPDATE] Update warehouse with id {} ", warehouse.getId());
+        log.info("[UPDATE] Update warehouse with id {}", warehouse.getId());
         /**
          * Validation Step
          */
@@ -52,7 +61,7 @@ public class WarehouseService {
     }
 
     public Warehouse deleteWarehouse(int warehouseId) throws Exception{
-        log.info("[DELETE] Delete warehouse with id {} ", warehouseId);
+        log.info("[DELETE] Delete warehouse with id {}", warehouseId);
         /**
          * Validation Step
          */

@@ -1,5 +1,6 @@
 package com.miniproject.warehouse.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -22,6 +23,8 @@ public class Transaction {
     private String transactionType;
 
     @Column(name = "transaction_date", nullable = false)
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date transactionDate;
 
     @Column(name = "transaction_quantity", nullable = false)

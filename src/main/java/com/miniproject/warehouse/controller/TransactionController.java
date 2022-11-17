@@ -5,6 +5,7 @@ import com.miniproject.warehouse.model.Asset;
 import com.miniproject.warehouse.model.Transaction;
 import com.miniproject.warehouse.repository.AssetRepository;
 import com.miniproject.warehouse.repository.TransactionRepository;
+import com.miniproject.warehouse.response.HttpResponse;
 import com.miniproject.warehouse.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,33 +28,69 @@ public class TransactionController {
 
     @GetMapping("/listall")
     @ResponseStatus(HttpStatus.OK)
-    List<Transaction> getAllTransaction(){
-        return transactionRepository.findAll();
+    public HttpResponse getAllTransaction(){
+        HttpResponse httpResponse = new HttpResponse();
+        List<Transaction> transactionList = transactionRepository.findAll();
+        httpResponse.setObject(transactionList);
+
+        if (transactionList.isEmpty()){
+            httpResponse.setMessage(HttpStatus.NO_CONTENT.name());
+            httpResponse.setStatus(HttpStatus.NO_CONTENT.value());
+        }else {
+            httpResponse.setMessage(HttpStatus.OK.name());
+            httpResponse.setStatus(HttpStatus.OK.value());
+        }
+        return httpResponse;
     }
 
     @GetMapping("/get/{id}")
     @ResponseStatus(HttpStatus.OK)
-    Transaction getTransactionById(@PathVariable("id")int id){
-        return transactionRepository.findTransactionById(id);
+    public HttpResponse getTransactionById(@PathVariable("id")int id){
+        HttpResponse httpResponse = new HttpResponse();
+        Transaction transaction = transactionRepository.findTransactionById(id);
+        httpResponse.setObject(transaction);
+
+        if (transaction == null){
+            httpResponse.setMessage(HttpStatus.NO_CONTENT.name());
+            httpResponse.setStatus(HttpStatus.NO_CONTENT.value());
+        }else {
+            httpResponse.setMessage(HttpStatus.OK.name());
+            httpResponse.setStatus(HttpStatus.OK.value());
+        }
+        return httpResponse;
     }
 
     @GetMapping("/asset-check/")
     @ResponseStatus(HttpStatus.OK)
-    List<AssetCheckInOut> getAssetCheckInOut(@RequestParam("transType")String transType, @RequestParam("barcode") String assetBarcode){
-        return transactionService.getAssetCheckInOut(transType, assetBarcode);
+    public HttpResponse getAssetCheckInOut(@RequestParam("transType")String transType, @RequestParam("barcode") String assetBarcode){
+        HttpResponse httpResponse = new HttpResponse();
+        List<AssetCheckInOut> assetCheckInOutList = transactionService.getAssetCheckInOut(transType, assetBarcode);
+        httpResponse.setObject(assetCheckInOutList);
+        if (assetCheckInOutList.isEmpty()){
+            httpResponse.setMessage(HttpStatus.NO_CONTENT.name());
+            httpResponse.setStatus(HttpStatus.NO_CONTENT.value());
+        }else {
+            httpResponse.setMessage(HttpStatus.OK.name());
+            httpResponse.setStatus(HttpStatus.OK.value());
+        }
+
+        return httpResponse;
     }
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.OK)
-    Transaction addTransaction(@RequestBody Transaction transaction){
-        return transactionRepository.save(transaction);
+    public HttpResponse addTransaction(@RequestBody Transaction transaction){
+        return transactionService.addTransaction(transaction);
     }
 
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public String deleteTransaction(@PathVariable("barcode") int id){
-
+    public HttpResponse deleteTransaction(@PathVariable("barcode") int id){
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setStatus(HttpStatus.OK.value());
+        httpResponse.setMessage("SUCCESSFULLY DELETED!");
         transactionRepository.deleteById(id);
-        return "DELETED SUCCESSFULLY";
+
+        return httpResponse;
     }
 }

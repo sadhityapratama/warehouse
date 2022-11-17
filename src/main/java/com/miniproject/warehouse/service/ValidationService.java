@@ -16,13 +16,13 @@ public class ValidationService {
 
     public void validateIfWarehouseExists(int warehouseId) throws Exception{
         if(!warehouseRepository.existsById(warehouseId)){
-            String message = String.format("Warehouse with id %d not exists! ", warehouseId);
+            String message = String.format("Warehouse with id %d not exists!", warehouseId);
             throw new BadRequestException(message);
         }
     }
     public void validateDuplicateWarehouse(String warehouseName) throws Exception{
         if(warehouseRepository.existsByWarehouseName(warehouseName)){
-            String message = String.format("Found duplicate warehouse with name %s ", warehouseName);
+            String message = String.format("Found duplicate warehouse with name %s", warehouseName);
             throw new BadRequestException(message);
         }
     }
