@@ -1,8 +1,10 @@
 package com.miniproject.warehouse.service;
 
+import com.fasterxml.uuid.Generators;
 import com.miniproject.warehouse.dto.AssetReport;
 import com.miniproject.warehouse.dto.AssetStockbyWarehouse;
 import com.miniproject.warehouse.enums.TransactionTypeEnum;
+import com.miniproject.warehouse.exception.BadRequestException;
 import com.miniproject.warehouse.model.Asset;
 import com.miniproject.warehouse.model.Stock;
 import com.miniproject.warehouse.model.Transaction;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -33,7 +36,31 @@ public class AssetService {
 
     @Autowired
     WarehouseService warehouseService;
+    @Autowired
+    ValidationService validationService;
 
+    public Asset getAsset(String barcode) throws Exception{
+        validationService.validateIfAssetExists(barcode);
+        return assetRepository.findAssetByBarcode(barcode);
+    }
+
+    public Asset addAsset(Asset asset) throws BadRequestException {
+        UUID barcode = Generators.timeBasedGenerator().generate();
+        asset.setBarcode(barcode.toString());
+        validationService.validateDuplicateAsset(asset.getBarcode());
+
+        return assetRepository.save(asset);
+    }
+
+    public Asset updateAsset(Asset asset) throws  Exception{
+        validationService.validateIfAssetExists(asset.getBarcode());
+        return  assetRepository.save(asset);
+    }
+
+    public void deleteAsset(String barcode)throws Exception{
+        validationService.validateIfAssetExists(barcode);
+        assetRepository.deleteById(barcode);
+    }
 
     public List<AssetReport> getAssetReport() throws Exception {
         List<Warehouse> warehouseList = warehouseRepository.findAll();

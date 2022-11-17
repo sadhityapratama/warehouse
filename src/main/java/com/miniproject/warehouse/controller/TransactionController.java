@@ -45,18 +45,12 @@ public class TransactionController {
 
     @GetMapping("/get/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public HttpResponse getTransactionById(@PathVariable("id")int id){
+    public HttpResponse getTransactionById(@PathVariable("id")int id) throws Exception {
         HttpResponse httpResponse = new HttpResponse();
-        Transaction transaction = transactionRepository.findTransactionById(id);
+        Transaction transaction = transactionService.getTransaction(id);
         httpResponse.setObject(transaction);
-
-        if (transaction == null){
-            httpResponse.setMessage(HttpStatus.NO_CONTENT.name());
-            httpResponse.setStatus(HttpStatus.NO_CONTENT.value());
-        }else {
-            httpResponse.setMessage(HttpStatus.OK.name());
-            httpResponse.setStatus(HttpStatus.OK.value());
-        }
+        httpResponse.setMessage(HttpStatus.OK.name());
+        httpResponse.setStatus(HttpStatus.OK.value());
         return httpResponse;
     }
 
@@ -79,17 +73,18 @@ public class TransactionController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.OK)
-    public HttpResponse addTransaction(@RequestBody Transaction transaction){
+    public HttpResponse addTransaction(@RequestBody Transaction transaction) throws Exception {
         return transactionService.addTransaction(transaction);
     }
 
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public HttpResponse deleteTransaction(@PathVariable("barcode") int id){
+    public HttpResponse deleteTransaction(@PathVariable("barcode") int id) throws Exception {
+        transactionService.deleteTransaction(id);
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setStatus(HttpStatus.OK.value());
-        httpResponse.setMessage("SUCCESSFULLY DELETED!");
-        transactionRepository.deleteById(id);
+        httpResponse.setMessage(HttpStatus.OK.name());
+
 
         return httpResponse;
     }

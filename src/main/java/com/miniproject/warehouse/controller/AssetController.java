@@ -3,6 +3,7 @@ package com.miniproject.warehouse.controller;
 import com.fasterxml.uuid.Generators;
 import com.miniproject.warehouse.dto.AssetReport;
 import com.miniproject.warehouse.model.Asset;
+import com.miniproject.warehouse.model.Warehouse;
 import com.miniproject.warehouse.repository.AssetRepository;
 import com.miniproject.warehouse.response.HttpResponse;
 import com.miniproject.warehouse.service.AssetService;
@@ -57,19 +58,15 @@ public class AssetController {
 
     @GetMapping("/get/{barcode}")
     @ResponseStatus(HttpStatus.OK)
-    public HttpResponse getAssetByBarcode(@PathVariable("barcode") String barcode){
+    public HttpResponse getAssetByBarcode(@PathVariable("barcode") String barcode) throws Exception {
         log.info(barcode);
-        HttpResponse httpResponse = new HttpResponse();
-        Asset asset = assetRepository.findAssetByBarcode(barcode);
-        httpResponse.setObject(asset);
+        Asset asset = assetService.getAsset(barcode);
 
-        if (asset == null){
-            httpResponse.setMessage(HttpStatus.NO_CONTENT.name());
-            httpResponse.setStatus(HttpStatus.NO_CONTENT.value());
-        }else {
-            httpResponse.setMessage(HttpStatus.OK.name());
-            httpResponse.setStatus(HttpStatus.OK.value());
-        }
+        // Set Http Response
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setObject(asset);
+        httpResponse.setMessage(HttpStatus.OK.name());
+        httpResponse.setStatus(HttpStatus.OK.value());
         return httpResponse;
     }
 
@@ -92,14 +89,10 @@ public class AssetController {
 
     @PostMapping("/add/")
     @ResponseStatus(HttpStatus.OK)
-    public HttpResponse addAsset(@RequestBody Asset asset){
-
+    public HttpResponse addAsset(@RequestBody Asset asset) throws Exception {
+        Asset assetResult = assetService.addAsset(asset);
         HttpResponse httpResponse = new HttpResponse();
-
-        UUID barcode = Generators.timeBasedGenerator().generate();
-        asset.setBarcode(barcode.toString());
-
-        httpResponse.setObject(assetRepository.save(asset));
+        httpResponse.setObject(assetResult);
         httpResponse.setStatus(HttpStatus.OK.value());
         httpResponse.setMessage(HttpStatus.OK.name());
 
@@ -108,10 +101,11 @@ public class AssetController {
 
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    public HttpResponse updateAsset(@RequestBody Asset asset){
-        HttpResponse httpResponse = new HttpResponse();
+    public HttpResponse updateAsset(@RequestBody Asset asset) throws Exception {
 
-        httpResponse.setObject(assetRepository.save(asset));
+        Asset assetResult = assetService.updateAsset(asset);
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setObject(assetResult);
         httpResponse.setStatus(HttpStatus.OK.value());
         httpResponse.setMessage(HttpStatus.OK.name());
 
@@ -120,12 +114,12 @@ public class AssetController {
 
     @DeleteMapping("/delete/{barcode}")
     @ResponseStatus(HttpStatus.OK)
-    public HttpResponse deleteAsset(@PathVariable("barcode") String barcode){
+    public HttpResponse deleteAsset(@PathVariable("barcode") String barcode) throws Exception {
+        assetService.deleteAsset(barcode);
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setStatus(HttpStatus.OK.value());
-        httpResponse.setMessage("SUCCESSFULLY DELETED!");
+        httpResponse.setMessage(HttpStatus.OK.name());
 
-        assetRepository.deleteById(barcode);
         return httpResponse;
     }
 
