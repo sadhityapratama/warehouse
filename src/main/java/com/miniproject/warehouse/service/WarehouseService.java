@@ -28,11 +28,22 @@ public class WarehouseService {
     private AssetRepository assetRepository;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private ValidationService validationService;
 
-    public List<AssetStockbyWarehouse> getAllAssetStock(int warehouseId){
+//    public Asset insertAsset(Asset asset) throws Exception{
+//        log.info("")
+//    }
+
+    public List<AssetStockbyWarehouse> getAllAssetStock(int warehouseId) throws Exception{
+
         log.info("[INQUIRY] Get Asset from Warehouse id {}", warehouseId);
-        Warehouse warehouse = warehouseRepository.findById(warehouseId).get();
-        log.info("Warehouse Detail : {}", warehouse.toString());
+        /**
+         * Validation Step
+         */
+        validationService.validateIfWarehouseExists(warehouseId);
+
+        Warehouse warehouse = warehouseRepository.findWarehouseById(warehouseId);
 
         List<Stock> stocks = stockRepository.findByWarehouseId(warehouseId);
         List<Asset> assets = assetRepository.findAssetByWarehouseId(warehouseId);

@@ -4,6 +4,7 @@ import com.miniproject.warehouse.dto.AssetStockbyWarehouse;
 import com.miniproject.warehouse.model.Warehouse;
 import com.miniproject.warehouse.repository.WarehouseRepository;
 import com.miniproject.warehouse.service.WarehouseService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("warehouse")
+@Slf4j
 public class WarehouseController {
 
     @Autowired
@@ -27,14 +29,15 @@ public class WarehouseController {
     }
 
     @GetMapping("/liststock")
-    public List<AssetStockbyWarehouse> getAllStockbyWarehouse(@RequestParam("id") int id){
-        return warehouseService.getAllAssetStock(id);
+    public List<AssetStockbyWarehouse> getAllStockbyWarehouse(@RequestParam("id") int warehouseId) throws Exception{
+        log.info("[INQUIRY] Get Asset from Warehouse id {} Sent", warehouseId);
+        return warehouseService.getAllAssetStock(warehouseId);
     }
 
     @GetMapping("/get")
     @ResponseStatus(HttpStatus.OK)
-    Warehouse getWarehouseById(@RequestParam("id") int id){
-        return warehouseRepository.findWarehouseById(id);
+    Warehouse getWarehouseById(@RequestParam("id") int warehouseId){
+        return warehouseRepository.findWarehouseById(warehouseId);
     }
 
     @PostMapping("/add")
@@ -51,9 +54,9 @@ public class WarehouseController {
 
     @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
-    public String deleteWarehouse(@RequestParam("id") int id){
+    public String deleteWarehouse(@RequestParam("id") int warehouseId){
 
-        warehouseRepository.deleteById(id);
+        warehouseRepository.deleteById(warehouseId);
 
         return "DELETED SUCCESFULLY";
     }
