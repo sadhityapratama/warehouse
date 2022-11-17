@@ -2,21 +2,32 @@ package com.miniproject.warehouse.util;
 
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Date;
 
 @Component
 @Slf4j
 public class JwtUtil {
 
-    private SecretKey key;
+    @Value("${jwt.secret}")
+    private String key;
+    @Value("${jwt.expiration}")
     private Long tokenValidity;
     private final String appName = "WarehouseProject";
 
-    public String generateToken(String username, String role){
-        log.info("Generate token for {} with role {} secret: {} validity: {}", username, role, key.toString(), tokenValidity);
+    public String generateToken(String username, String role) throws NoSuchAlgorithmException {
+        byte[] decodedKey = Base64.getDecoder().decode(key);
+        SecretKey originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES-192");
+
+        log.info("Generate token for {} with role {} secret: {} validity: {}", username, role, originalKey, tokenValidity);
         long nowMillis = System.currentTimeMillis();
         log.info("current millis: {}", nowMillis);
         long expMillis = nowMillis + tokenValidity;
@@ -28,7 +39,7 @@ public class JwtUtil {
                 .setExpiration(expirationDate)
                 .claim("username", username)
                 .claim("role",role)
-                .signWith(key).compact();
+                .signWith(originalKey).compact();
         log.info("Token : {}", jws);
         return jws;
     }
