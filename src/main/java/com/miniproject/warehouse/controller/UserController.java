@@ -8,19 +8,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
 @ResponseStatus(HttpStatus.OK)
-@RequestMapping("user")
+//@RequestMapping("user")
 @Slf4j
 public class UserController {
 
     @Autowired
     private UserService userService;
 
+    @GetMapping("/user")
+    public Principal user(Principal user){
+        return user;
+    }
 
-    @PostMapping("/add")
+//    @PostMapping("/login")
+//    public boolean login(@RequestBody User user) {
+//        return
+//                user.getUsername().equals("user") && user.getPassword().equals("password");
+//    }
+
+    @PostMapping("/user/add")
     public HttpResponse createUser(@RequestBody User user) throws Exception{
 
         User userAdded = userService.createUser(user);
@@ -33,7 +44,7 @@ public class UserController {
         return httpResponse;
     }
 
-    @PutMapping("/update")
+    @PutMapping("/user/update")
     public HttpResponse updateUser(@RequestBody User user) throws Exception{
 
         User userUpdated = userService.updateUser(user);
@@ -47,7 +58,7 @@ public class UserController {
         return httpResponse;
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/user/delete")
     public HttpResponse deleteUser(@RequestParam("id") int userId) throws Exception{
 
         User userDeleted = userService.deleteUser(userId);
@@ -60,7 +71,7 @@ public class UserController {
         return httpResponse;
     }
 
-    @GetMapping("/listall")
+    @GetMapping("/user/listall")
     public HttpResponse inquiryAllUser() throws Exception{
 
         List<User> userList = userService.inquiryAllUser();
@@ -74,7 +85,7 @@ public class UserController {
         return httpResponse;
     }
 
-    @GetMapping("/list")
+    @GetMapping("/user/list")
     public HttpResponse inquiryUser(@RequestParam("id") int userId) throws Exception{
 
         User user = userService.inquiryUser(userId);

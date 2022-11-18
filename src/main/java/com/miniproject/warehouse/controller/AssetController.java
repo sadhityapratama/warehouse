@@ -21,6 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("asset")
+@CrossOrigin(origins = "http://localhost:4100")
 @Slf4j
 public class AssetController {
 
