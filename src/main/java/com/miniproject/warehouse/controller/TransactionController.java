@@ -79,7 +79,7 @@ public class TransactionController {
 
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public HttpResponse deleteTransaction(@PathVariable("barcode") int id) throws Exception {
+    public HttpResponse deleteTransaction(@PathVariable("id") int id) throws Exception {
         transactionService.deleteTransaction(id);
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setStatus(HttpStatus.OK.value());

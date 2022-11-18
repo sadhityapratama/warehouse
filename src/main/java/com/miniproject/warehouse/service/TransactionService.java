@@ -45,6 +45,10 @@ public class TransactionService {
 
     public void deleteTransaction(int id)throws Exception{
         validationService.validateIfTransactionExists(id);
+        Transaction transaction = transactionRepository.findTransactionById(id);
+        Stock stock = stockRepository.findStockByAssetBarcodeAndWarehouseId(transaction.getAssetBarcode(), transaction.getWarehouseId());
+        stock.setStock(stock.getStock()+transaction.getTransactionQuantity());
+        stockRepository.save(stock);
         transactionRepository.deleteById(id);
     }
 
