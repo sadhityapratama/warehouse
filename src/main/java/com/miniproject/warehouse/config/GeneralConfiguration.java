@@ -54,13 +54,13 @@ public class GeneralConfiguration {
                 .mvcMatchers(HttpMethod.POST,"/transaction/**").hasAnyAuthority("employee")
                 .mvcMatchers(HttpMethod.PUT, "/transaction/**").hasAuthority("employee")
                 .mvcMatchers(HttpMethod.DELETE, "/transaction/**").hasAnyAuthority("employee")
-                .mvcMatchers(HttpMethod.GET, "/user/**").hasAnyAuthority("sa")
+                .mvcMatchers(HttpMethod.GET, "/user/**").hasAnyAuthority("sa","admin","employee")
                 .mvcMatchers(HttpMethod.POST,"/user/**").hasAnyAuthority("sa")
                 .mvcMatchers(HttpMethod.PUT, "/user/**").hasAuthority("sa")
                 .mvcMatchers(HttpMethod.DELETE, "/user/**").hasAnyAuthority("sa")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().permitAll()
+                .formLogin().loginPage("/springlogin").permitAll()
                 .and()
                 .logout().permitAll();
         return http.build();

@@ -57,9 +57,9 @@ public class AssetController {
         return httpResponse;
     }
 
-    @GetMapping("/get/{barcode}")
+    @GetMapping("/get")
     @ResponseStatus(HttpStatus.OK)
-    public HttpResponse getAssetByBarcode(@PathVariable("barcode") String barcode) throws Exception {
+    public HttpResponse getAssetByBarcode(@RequestParam("barcode") String barcode) throws Exception {
         log.info(barcode);
         Asset asset = assetService.getAsset(barcode);
 
@@ -88,7 +88,7 @@ public class AssetController {
         return httpResponse;
     }
 
-    @PostMapping("/add/")
+    @PostMapping("/add")
     @ResponseStatus(HttpStatus.OK)
     public HttpResponse addAsset(@RequestBody Asset asset) throws Exception {
         Asset assetResult = assetService.addAsset(asset);
@@ -113,9 +113,9 @@ public class AssetController {
         return httpResponse;
     }
 
-    @DeleteMapping("/delete/{barcode}")
+    @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
-    public HttpResponse deleteAsset(@PathVariable("barcode") String barcode) throws Exception {
+    public HttpResponse deleteAsset(@RequestParam("barcode") String barcode) throws Exception {
         assetService.deleteAsset(barcode);
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setStatus(HttpStatus.OK.value());

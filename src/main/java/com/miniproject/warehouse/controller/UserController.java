@@ -20,7 +20,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/user")
+    @GetMapping("/api/auth/signin")
     public Principal user(Principal user){
         return user;
     }

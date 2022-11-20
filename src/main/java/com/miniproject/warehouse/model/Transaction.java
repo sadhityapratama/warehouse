@@ -24,7 +24,7 @@ public class Transaction {
 
     @Column(name = "transaction_date", nullable = false)
     @Temporal(TemporalType.DATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date transactionDate;
 
     @Column(name = "transaction_quantity", nullable = false)

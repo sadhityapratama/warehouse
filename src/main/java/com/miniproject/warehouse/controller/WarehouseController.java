@@ -96,9 +96,9 @@ public class WarehouseController {
         return httpResponse;
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
-    public HttpResponse deleteWarehouse(@PathVariable("id")  int warehouseId) throws Exception{
+    public HttpResponse deleteWarehouse(@RequestParam("id")  int warehouseId) throws Exception{
 
         Warehouse warehouseDeleted = warehouseService.deleteWarehouse(warehouseId);
 

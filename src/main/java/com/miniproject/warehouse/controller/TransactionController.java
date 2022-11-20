@@ -43,9 +43,9 @@ public class TransactionController {
         return httpResponse;
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/get")
     @ResponseStatus(HttpStatus.OK)
-    public HttpResponse getTransactionById(@PathVariable("id")int id) throws Exception {
+    public HttpResponse getTransactionById(@RequestParam("id") int id) throws Exception {
         HttpResponse httpResponse = new HttpResponse();
         Transaction transaction = transactionService.getTransaction(id);
         httpResponse.setObject(transaction);
@@ -54,7 +54,7 @@ public class TransactionController {
         return httpResponse;
     }
 
-    @GetMapping("/asset-check/")
+    @GetMapping("/asset-check")
     @ResponseStatus(HttpStatus.OK)
     public HttpResponse getAssetCheckInOut(@RequestParam("transType")String transType, @RequestParam("barcode") String assetBarcode){
         HttpResponse httpResponse = new HttpResponse();
@@ -77,9 +77,9 @@ public class TransactionController {
         return transactionService.addTransaction(transaction);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
-    public HttpResponse deleteTransaction(@PathVariable("id") int id) throws Exception {
+    public HttpResponse deleteTransaction(@RequestParam("id") int id) throws Exception {
         transactionService.deleteTransaction(id);
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setStatus(HttpStatus.OK.value());
